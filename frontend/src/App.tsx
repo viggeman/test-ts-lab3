@@ -1,12 +1,20 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import './App.css';
+import TodoList from './components/TodoList/TodoList';
+
+interface todos {
+  id: number;
+  task: string;
+  completed: boolean;
+}
 
 const App: FC = () => {
+  const [todos, setTodos] = useState<Array<todos>>([]);
   const getTodos = async () => {
     try {
       const response = await fetch('api/todos');
       const data = await response.json();
-      console.log('data', data);
+      setTodos(data);
     } catch (error) {
       console.error(error);
     }
@@ -18,7 +26,13 @@ const App: FC = () => {
 
   return (
     <div>
-      <h1>App</h1>
+      {todos.map((todo) => (
+        <TodoList todo={todo} />
+        // <div key={todo.id}>
+        //   <p>{todo.task}</p>
+        //   <p>{todo.id}</p>
+        // </div>
+      ))}
     </div>
   );
 };
