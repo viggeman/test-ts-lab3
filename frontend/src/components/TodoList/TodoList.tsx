@@ -12,7 +12,7 @@ const TodoList: React.FC<TodoListProps> = ({ todos }) => {
     return <div>No todos yet!</div>;
   }
 
-  return <ul></ul>; // Just an empty list for now
+  return <ul></ul>;
 };
 
 export default TodoList;
