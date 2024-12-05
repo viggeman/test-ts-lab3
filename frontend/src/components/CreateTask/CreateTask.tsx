@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, FormEvent, useState } from 'react';
 
 interface CreateTaskProps {
   onCreateTask: (task: string) => void;
@@ -7,7 +7,7 @@ interface CreateTaskProps {
 const CreateTask: FC<CreateTaskProps> = ({ onCreateTask }) => {
   const [task, setTask] = useState('');
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     onCreateTask(task);
   };

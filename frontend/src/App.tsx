@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import './App.css';
+import CreateTask from './components/CreateTask/CreateTask';
 import TodoList from './components/TodoList/TodoList';
 
 interface Todo {
@@ -53,10 +54,16 @@ const App: FC = () => {
 
   const handleEdit = async (id: number, newTask: string) => {
     try {
+      const todo = todos.find((todo) => todo.id === id);
+      if (!todo) {
+        console.error('Todo not found');
+        return;
+      }
+
       const response = await fetch(`/api/todos/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task: newTask }),
+        body: JSON.stringify({ task: newTask, completed: todo.completed }),
       });
 
       if (response.ok) {
@@ -85,8 +92,27 @@ const App: FC = () => {
     }
   };
 
+  const handleCreateTask = async (task: string) => {
+    try {
+      const response = await fetch('/api/todos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task, completed: false }),
+      });
+
+      if (response.ok) {
+        getTodos();
+      } else {
+        console.error('Failed to create task');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div>
+      <CreateTask onCreateTask={handleCreateTask} />
       <TodoList
         todos={todos}
         onToggleComplete={handleToggleComplete}

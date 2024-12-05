@@ -16,11 +16,14 @@ client.connect();
 app.use(express.json());
 
 app.get('/api/todos', async (_request: Request, response: Response) => {
-  const { rows } = await client.query('SELECT * FROM todos;');
   try {
+    const { rows } = await client.query(
+      'SELECT * FROM todos ORDER BY created_at DESC;'
+    );
     response.status(200).send(rows);
   } catch (error) {
     console.error('Error executing query', error);
+    response.status(500).send('Internal Server Error');
   }
 });
 
