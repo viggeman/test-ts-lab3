@@ -76,6 +76,27 @@ app.delete('/api/todos/:id', async (request: Request, response: Response) => {
   }
 });
 
+app.patch(
+  '/api/todos/:id/toggle',
+  async (request: Request, response: Response) => {
+    const { id } = request.params;
+    try {
+      const { rows } = await client.query(
+        'UPDATE todos SET completed = NOT completed WHERE id = $1 RETURNING *;',
+        [id]
+      );
+      if (rows.length === 0) {
+        response.status(404).send('Todo not found');
+      } else {
+        response.status(200).send(rows[0]);
+      }
+    } catch (error) {
+      console.error('Error executing query', error);
+      response.status(500).send('Internal Server Error');
+    }
+  }
+);
+
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });

@@ -30,4 +30,20 @@ describe('TodoList Component', () => {
     cy.contains('Task 2').should('be.visible');
     cy.get('li[data-testid="todo-item"]').should('have.length', 2);
   });
+  it('calls onToggleComplete when checkbox is clicked', () => {
+    const mockTodos = [{ id: 1, task: 'Task 1', completed: false }];
+    const mockOnToggleComplete = cy.spy();
+
+    mount(
+      <TodoList
+        todos={mockTodos}
+        onToggleComplete={mockOnToggleComplete}
+        onEdit={() => {}}
+        onDelete={() => {}}
+      />
+    );
+
+    cy.get('input[type="checkbox"]').click();
+    cy.wrap(mockOnToggleComplete).should('have.been.calledWith', 1);
+  });
 });
