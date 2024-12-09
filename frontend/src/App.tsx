@@ -3,10 +3,17 @@ import './App.css';
 import CreateTask from './components/CreateTask/CreateTask';
 import TodoList from './components/TodoList/TodoList';
 
+interface Checklist {
+  item: string;
+  checked: boolean;
+}
+
 interface Todo {
   id: number;
   task: string;
   completed: boolean;
+  description: string;
+  checklist: Checklist[];
 }
 
 const App: FC = () => {
@@ -16,6 +23,7 @@ const App: FC = () => {
     try {
       const response = await fetch('/api/todos');
       const data = await response.json();
+      console.log(data);
       setTodos(data);
     } catch (error) {
       console.error(error);

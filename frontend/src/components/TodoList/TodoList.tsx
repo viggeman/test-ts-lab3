@@ -1,7 +1,20 @@
 import React, { useState } from 'react';
 
+interface Checklist {
+  item: string;
+  checked: boolean;
+}
+
+interface Todo {
+  id: number;
+  task: string;
+  completed: boolean;
+  description: string;
+  checklist: Checklist[];
+}
+
 interface TodoListProps {
-  todos: { id: number; task: string; completed: boolean }[];
+  todos: Todo[];
   onToggleComplete: (id: number) => void;
   onEdit: (id: number, newTask: string) => void;
   onDelete: (id: number) => void;
@@ -13,6 +26,7 @@ const TodoList: React.FC<TodoListProps> = ({
   onToggleComplete,
   onEdit,
 }) => {
+  console.log('data', todos);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [newTask, setNewTask] = useState<string>('');
 
@@ -87,6 +101,15 @@ const TodoList: React.FC<TodoListProps> = ({
           ) : (
             <>
               <span>{todo.task}</span>
+              <p>{todo.description}</p>
+              <ul>
+                {todo.checklist.map((item, index) => (
+                  <li key={index}>
+                    <input type="checkbox" checked={item.checked} />
+                    <span>{item.item}</span>
+                  </li>
+                ))}
+              </ul>
               <button onClick={() => handleEdit(todo.id, todo.task)}>
                 Edit
               </button>
