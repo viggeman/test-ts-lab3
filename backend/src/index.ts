@@ -17,13 +17,23 @@ app.use(express.json());
 
 app.get('/api/todos', async (_request: Request, response: Response) => {
   try {
-    const { rows } = await client.query(
-      'SELECT * FROM todos ORDER BY created_at DESC;'
-    );
-    response.status(200).send(rows);
+    const result = await client.query(`
+      SELECT
+        t.*,
+      COALESCE(json_agg(json_build_object('item', ci.item, 'checked', ci.checked)) FILTER (WHERE ci.item IS NOT NULL), '[]') AS checklist
+      FROM
+        todos t
+      LEFT JOIN
+        checklist_items ci ON t.id = ci.todo_id
+      GROUP BY
+        t.id, t.task, t.description, t.completed
+      ORDER BY t.created_at DESC
+    `);
+    const todos = result.rows;
+    response.json(todos);
   } catch (error) {
-    console.error('Error executing query', error);
-    response.status(500).send('Internal Server Error');
+    console.error(error);
+    response.status(500).json({ error: 'Failed to get todos' });
   }
 });
 
