@@ -91,7 +91,7 @@ describe('TodoList Component', () => {
     cy.contains('Task 1').should('be.visible');
     cy.contains('This is a test task').should('be.visible');
 
-    cy.get('.close-button').click();
+    cy.get('.closeButton').click();
     cy.get('[data-testid="todo-modal"]').should('not.exist');
   });
 });

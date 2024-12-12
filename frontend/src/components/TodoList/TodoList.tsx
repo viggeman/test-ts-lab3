@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from './TodoList.module.css';
 
 interface Checklist {
   item: string;
@@ -126,9 +127,9 @@ const TodoList: React.FC<TodoListProps> = ({
         </div>
       ))}
       {showModal && selectedTodo && (
-        <div className="modal" data-testid="todo-modal">
-          <div className="modal-content">
-            <span className="close-button" onClick={handleCloseModal}>
+        <div className={styles.modal} data-testid="todo-modal">
+          <div className={styles.modalContent}>
+            <span className={styles.closeButton} onClick={handleCloseModal}>
               &times;
             </span>
             <h2>{selectedTodo.task}</h2>
@@ -141,7 +142,6 @@ const TodoList: React.FC<TodoListProps> = ({
                 </div>
               ))}
             </div>
-            <button onClick={handleCloseModal}>Close</button>
           </div>
         </div>
       )}
