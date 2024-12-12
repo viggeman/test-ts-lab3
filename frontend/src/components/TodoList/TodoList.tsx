@@ -29,6 +29,18 @@ const TodoList: React.FC<TodoListProps> = ({
   console.log('data', todos);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [newTask, setNewTask] = useState<string>('');
+  const [showModal, setShowModal] = useState(false);
+  const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
+
+  const handleOpenModal = (todo: Todo) => {
+    setSelectedTodo(todo);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedTodo(null);
+  };
 
   const handleEdit = async (id: number, task: string) => {
     setEditingId(id);
@@ -80,9 +92,13 @@ const TodoList: React.FC<TodoListProps> = ({
   }
 
   return (
-    <ul>
+    <div>
       {todos.map((todo) => (
-        <li key={todo.id} data-testid="todo-item">
+        <div
+          key={todo.id}
+          data-testid="todo-item"
+          onClick={() => handleOpenModal(todo)}
+        >
           <input
             type="checkbox"
             checked={todo.completed}
@@ -100,25 +116,36 @@ const TodoList: React.FC<TodoListProps> = ({
             </>
           ) : (
             <>
-              <span>{todo.task}</span>
-              <p>{todo.description}</p>
-              <ul>
-                {todo.checklist.map((item, index) => (
-                  <li key={index}>
-                    <input type="checkbox" checked={item.checked} />
-                    <span>{item.item}</span>
-                  </li>
-                ))}
-              </ul>
+              <h3>{todo.task}</h3>
               <button onClick={() => handleEdit(todo.id, todo.task)}>
                 Edit
               </button>
               <button onClick={() => handleDelete(todo.id)}>Delete</button>
             </>
           )}
-        </li>
+        </div>
       ))}
-    </ul>
+      {showModal && selectedTodo && (
+        <div className="modal" data-testid="todo-modal">
+          <div className="modal-content">
+            <span className="close-button" onClick={handleCloseModal}>
+              &times;
+            </span>
+            <h2>{selectedTodo.task}</h2>
+            <p>{selectedTodo.description}</p>
+            <div>
+              {selectedTodo.checklist.map((listItem, index) => (
+                <div key={index}>
+                  <input type="checkbox" checked={listItem.checked} readOnly />
+                  <span>{listItem.item}</span>
+                </div>
+              ))}
+            </div>
+            <button onClick={handleCloseModal}>Close</button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
