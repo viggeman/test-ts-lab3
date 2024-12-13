@@ -17,7 +17,7 @@ interface Todo {
 interface TodoListProps {
   todos: Todo[];
   onToggleComplete: (id: number) => void;
-  onEdit: (id: number, newTask: string) => void;
+  onEdit: (id: number, newTask: string, newDescription: string) => void;
   onDelete: (id: number) => void;
 }
 
@@ -29,6 +29,7 @@ const TodoList: React.FC<TodoListProps> = ({
 }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [newTask, setNewTask] = useState<string>('');
+  const [newDescription, setNewDescription] = useState<string>('');
   const [showModal, setShowModal] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
 
@@ -42,17 +43,23 @@ const TodoList: React.FC<TodoListProps> = ({
     setSelectedTodo(null);
   };
 
-  const handleEdit = (id: number, task: string) => {
+  const handleEdit = (id: number, task: string, description: string) => {
     setEditingId(id);
     setNewTask(task);
+    setNewDescription(description);
   };
 
   const handleSave = (id: number) => {
-    onEdit(id, newTask);
+    onEdit(id, newTask, newDescription);
     setEditingId(null);
     setNewTask('');
+    setNewDescription('');
     if (selectedTodo) {
-      setSelectedTodo({ ...selectedTodo, task: newTask });
+      setSelectedTodo({
+        ...selectedTodo,
+        task: newTask,
+        description: newDescription,
+      });
     }
   };
 
@@ -85,7 +92,11 @@ const TodoList: React.FC<TodoListProps> = ({
       {showModal && selectedTodo && (
         <div className={styles.modal} data-testid="todo-modal">
           <div className={styles.modalContent}>
-            <span className={styles.closeButton} onClick={handleCloseModal}>
+            <span
+              className={styles.closeButton}
+              data-testid="close-button"
+              onClick={handleCloseModal}
+            >
               &times;
             </span>
             <div>
@@ -98,13 +109,8 @@ const TodoList: React.FC<TodoListProps> = ({
                       onChange={(e) => setNewTask(e.target.value)}
                     />
                     <textarea
-                      value={selectedTodo.description}
-                      onChange={(e) =>
-                        setSelectedTodo({
-                          ...selectedTodo,
-                          description: e.target.value,
-                        })
-                      }
+                      value={newDescription || undefined}
+                      onChange={(e) => setNewDescription(e.target.value)}
                     />
                     <div className={styles.buttonContainer}>
                       <div>
@@ -141,7 +147,11 @@ const TodoList: React.FC<TodoListProps> = ({
                   </div>
                   <span
                     onClick={() =>
-                      handleEdit(selectedTodo.id, selectedTodo.task)
+                      handleEdit(
+                        selectedTodo.id,
+                        selectedTodo.task,
+                        selectedTodo.description
+                      )
                     }
                   >
                     Edit

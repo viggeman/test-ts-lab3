@@ -54,11 +54,12 @@ app.post('/api/todos', async (request: Request, response: Response) => {
 
 app.put('/api/todos/:id', async (request: Request, response: Response) => {
   const { id } = request.params;
-  const { task, completed } = request.body;
+  const { task, completed, description } = request.body;
+  console.log(request.params);
   try {
     const { rows } = await client.query(
-      'UPDATE todos SET task = $1, completed = $2 WHERE id = $3 RETURNING *;',
-      [task, completed, id]
+      'UPDATE todos SET task = $1, completed = $2, description = $3 WHERE id = $4 RETURNING *;',
+      [task, completed, description, id]
     );
     if (rows.length === 0) {
       response.status(404).send('Todo not found');

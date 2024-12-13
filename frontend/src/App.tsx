@@ -59,7 +59,12 @@ const App: FC = () => {
     }
   };
 
-  const handleEdit = async (id: number, newTask: string) => {
+  const handleEdit = async (
+    id: number,
+    newTask: string,
+    newDescription: string
+  ) => {
+    console.log('newdesc', newDescription);
     try {
       const todo = todos.find((todo) => todo.id === id);
       if (!todo) {
@@ -70,9 +75,13 @@ const App: FC = () => {
       const response = await fetch(`/api/todos/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task: newTask, completed: todo.completed }),
+        body: JSON.stringify({
+          task: newTask,
+          completed: todo.completed,
+          description: newDescription,
+        }),
       });
-
+      console.log('response', response);
       if (response.ok) {
         getTodos();
       } else {
