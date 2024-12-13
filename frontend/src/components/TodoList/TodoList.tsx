@@ -27,7 +27,6 @@ const TodoList: React.FC<TodoListProps> = ({
   onToggleComplete,
   onEdit,
 }) => {
-  console.log('data', todos);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [newTask, setNewTask] = useState<string>('');
   const [showModal, setShowModal] = useState(false);
@@ -43,49 +42,24 @@ const TodoList: React.FC<TodoListProps> = ({
     setSelectedTodo(null);
   };
 
-  const handleEdit = async (id: number, task: string) => {
+  const handleEdit = (id: number, task: string) => {
     setEditingId(id);
     setNewTask(task);
   };
-  const handleSave = async (id: number) => {
-    const todo = todos.find((todo) => todo.id === id);
-    if (!todo) return;
 
-    try {
-      const response = await fetch(`/api/todos/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ task: newTask, completed: todo.completed }),
-      });
-
-      if (response.ok) {
-        onEdit(id, newTask);
-        setEditingId(null);
-        setNewTask('');
-      } else {
-        console.error('Failed to update todo');
-      }
-    } catch (error) {
-      console.error('Error:', error);
+  const handleSave = (id: number) => {
+    onEdit(id, newTask);
+    setEditingId(null);
+    setNewTask('');
+    if (selectedTodo) {
+      setSelectedTodo({ ...selectedTodo, task: newTask });
     }
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      const response = await fetch(`/api/todos/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        onDelete(id);
-      } else {
-        console.error('Failed to delete todo');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
+  const handleDelete = (id: number) => {
+    onDelete(id);
+    setEditingId(null);
+    setShowModal(!showModal);
   };
 
   if (todos.length === 0) {
@@ -105,25 +79,7 @@ const TodoList: React.FC<TodoListProps> = ({
             checked={todo.completed}
             onChange={() => onToggleComplete(todo.id)}
           />
-          {editingId === todo.id ? (
-            <>
-              <input
-                type="text"
-                value={newTask}
-                onChange={(e) => setNewTask(e.target.value)}
-              />
-              <button onClick={() => handleSave(todo.id)}>Save</button>
-              <button onClick={() => setEditingId(null)}>Cancel</button>
-            </>
-          ) : (
-            <>
-              <h3>{todo.task}</h3>
-              <button onClick={() => handleEdit(todo.id, todo.task)}>
-                Edit
-              </button>
-              <button onClick={() => handleDelete(todo.id)}>Delete</button>
-            </>
-          )}
+          <h3>{todo.task}</h3>
         </div>
       ))}
       {showModal && selectedTodo && (
@@ -132,15 +88,66 @@ const TodoList: React.FC<TodoListProps> = ({
             <span className={styles.closeButton} onClick={handleCloseModal}>
               &times;
             </span>
-            <h2>{selectedTodo.task}</h2>
-            <p>{selectedTodo.description}</p>
             <div>
-              {selectedTodo.checklist.map((listItem, index) => (
-                <div key={index}>
-                  <input type="checkbox" checked={listItem.checked} readOnly />
-                  <span>{listItem.item}</span>
-                </div>
-              ))}
+              {editingId === selectedTodo.id ? (
+                <>
+                  <div className={styles.editContainer}>
+                    <input
+                      type="text"
+                      value={newTask}
+                      onChange={(e) => setNewTask(e.target.value)}
+                    />
+                    <textarea
+                      value={selectedTodo.description}
+                      onChange={(e) =>
+                        setSelectedTodo({
+                          ...selectedTodo,
+                          description: e.target.value,
+                        })
+                      }
+                    />
+                    <div className={styles.buttonContainer}>
+                      <div>
+                        <button onClick={() => setEditingId(null)}>
+                          Cancel
+                        </button>
+                        <button onClick={() => handleSave(selectedTodo.id)}>
+                          Save
+                        </button>
+                      </div>
+                      <div>
+                        <button onClick={() => handleDelete(selectedTodo.id)}>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h2>{selectedTodo.task}</h2>
+                  <p>{selectedTodo.description}</p>
+                  <div>
+                    {selectedTodo.checklist.map((listItem, index) => (
+                      <div key={index}>
+                        <input
+                          type="checkbox"
+                          checked={listItem.checked}
+                          readOnly
+                        />
+                        <span>{listItem.item}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <span
+                    onClick={() =>
+                      handleEdit(selectedTodo.id, selectedTodo.task)
+                    }
+                  >
+                    Edit
+                  </span>
+                </>
+              )}
             </div>
           </div>
         </div>

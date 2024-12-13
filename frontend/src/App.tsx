@@ -1,5 +1,4 @@
 import { FC, useEffect, useState } from 'react';
-import './App.css';
 import CreateTask from './components/CreateTask/CreateTask';
 import TodoList from './components/TodoList/TodoList';
 
@@ -91,7 +90,7 @@ const App: FC = () => {
       });
 
       if (response.ok) {
-        getTodos();
+        setTodos(todos.filter((todo) => todo.id !== id));
       } else {
         console.error('Failed to delete todo');
       }
