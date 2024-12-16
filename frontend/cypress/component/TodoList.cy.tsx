@@ -101,4 +101,45 @@ describe('TodoList Component', () => {
     cy.get('[data-testid="close-button"]').click();
     cy.get('[data-testid="todo-modal"]').should('not.exist');
   });
+
+  it('opens the modal, edits the task and description, and saves changes', () => {
+    const mockTodos = [
+      {
+        id: 1,
+        task: 'Task 1',
+        description: 'This is a test task',
+        checklist: [],
+        completed: false,
+      },
+    ];
+    const mockOnEdit = cy.spy().as('editTask');
+
+    mount(
+      <TodoList
+        todos={mockTodos}
+        onToggleComplete={() => {}}
+        onEdit={mockOnEdit}
+        onDelete={() => {}}
+      />
+    );
+
+    cy.get('[data-testid="todo-item"]').click();
+    cy.get('[data-testid="todo-modal"]').should('be.visible');
+    cy.get('[data-testid="todo-modal"]').contains('Edit').click();
+
+    cy.get('input[type="text"]').clear().type('Edited task');
+
+    cy.get('textarea').clear().type('Edited description');
+
+    cy.get('[data-testid="todo-modal"]').contains('Save').click();
+
+    cy.get('@editTask').should(
+      'have.been.calledWith',
+      1,
+      'Edited task',
+      'Edited description'
+    );
+    cy.get('[data-testid="todo-modal"]').should('be.visible');
+    cy.contains('Edited task').should('be.visible');
+  });
 });
