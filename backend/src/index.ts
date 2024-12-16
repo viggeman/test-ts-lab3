@@ -111,6 +111,88 @@ app.patch(
   }
 );
 
+app.post(
+  '/api/todos/:id/checklist',
+  async (request: Request, response: Response) => {
+    const { id } = request.params;
+    const { item, checked } = request.body;
+    try {
+      const { rows } = await client.query(
+        'INSERT INTO checklist_items (todo_id, item, checked) VALUES ($1, $2, $3) RETURNING *;',
+        [id, item, checked]
+      );
+      response.status(201).send(rows[0]);
+    } catch (error) {
+      console.error('Error executing query', error);
+      response.status(500).send('Internal Server Error');
+    }
+  }
+);
+
+app.put(
+  '/api/todos/:id/checklist/:itemId',
+  async (request: Request, response: Response) => {
+    const { id, itemId } = request.params;
+    const { item, checked } = request.body;
+    try {
+      const { rows } = await client.query(
+        'UPDATE checklist_items SET item = $1, checked = $2 WHERE todo_id = $3 AND id = $4 RETURNING *;',
+        [item, checked, id, itemId]
+      );
+      if (rows.length === 0) {
+        response.status(404).send('Checklist item not found');
+      } else {
+        response.status(200).send(rows[0]);
+      }
+    } catch (error) {
+      console.error('Error executing query', error);
+      response.status(500).send('Internal Server Error');
+    }
+  }
+);
+
+app.delete(
+  '/api/todos/:id/checklist/:itemId',
+  async (request: Request, response: Response) => {
+    const { id, itemId } = request.params;
+    try {
+      const { rowCount } = await client.query(
+        'DELETE FROM checklist_items WHERE todo_id = $1 AND id = $2;',
+        [id, itemId]
+      );
+      if (rowCount === 0) {
+        response.status(404).send('Checklist item not found');
+      } else {
+        response.status(204).send();
+      }
+    } catch (error) {
+      console.error('Error executing query', error);
+      response.status(500).send('Internal Server Error');
+    }
+  }
+);
+
+app.patch(
+  '/api/todos/:id/checklist/:itemId/toggle',
+  async (request: Request, response: Response) => {
+    const { id, itemId } = request.params;
+    try {
+      const { rows } = await client.query(
+        'UPDATE checklist_items SET checked = NOT checked WHERE todo_id = $1 AND id = $2 RETURNING *;',
+        [id, itemId]
+      );
+      if (rows.length === 0) {
+        response.status(404).send('Checklist item not found');
+      } else {
+        response.status(200).send(rows[0]);
+      }
+    } catch (error) {
+      console.error('Error executing query', error);
+      response.status(500).send('Internal Server Error');
+    }
+  }
+);
+
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
