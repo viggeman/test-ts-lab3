@@ -3,6 +3,7 @@ import CreateTask from './components/CreateTask/CreateTask';
 import TodoList from './components/TodoList/TodoList';
 
 interface Checklist {
+  id: number;
   item: string;
   checked: boolean;
 }

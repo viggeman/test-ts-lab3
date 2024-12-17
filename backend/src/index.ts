@@ -20,7 +20,7 @@ app.get('/api/todos', async (_request: Request, response: Response) => {
     const result = await client.query(`
       SELECT
         t.*,
-      COALESCE(json_agg(json_build_object('item', ci.item, 'checked', ci.checked)) FILTER (WHERE ci.item IS NOT NULL), '[]') AS checklist
+      COALESCE(json_agg(json_build_object('id', ci.id, 'item', ci.item, 'checked', ci.checked)) FILTER (WHERE ci.item IS NOT NULL), '[]') AS checklist
       FROM
         todos t
       LEFT JOIN

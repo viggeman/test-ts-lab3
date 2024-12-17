@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import ChecklistItem from '../ChecklistItem/ChecklistItem';
 import styles from './TodoList.module.css';
 
 interface Checklist {
+  id: number;
   item: string;
   checked: boolean;
 }
@@ -32,15 +34,47 @@ const TodoList: React.FC<TodoListProps> = ({
   const [newDescription, setNewDescription] = useState<string>('');
   const [showModal, setShowModal] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
+  const [checklistItems, setChecklistItems] = useState<Checklist[]>([]);
+  const [newChecklistItem, setNewChecklistItem] = useState<string>('');
 
   const handleOpenModal = (todo: Todo) => {
     setSelectedTodo(todo);
     setShowModal(true);
+    setChecklistItems(todo.checklist);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedTodo(null);
+    setChecklistItems([]);
+  };
+
+  const addChecklistItem = async () => {
+    try {
+      if (newChecklistItem.trim() !== '' && selectedTodo) {
+        const response = await fetch(
+          `/api/todos/${selectedTodo.id}/checklist`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              item: newChecklistItem.trim(),
+              checked: false,
+            }),
+          }
+        );
+
+        if (response.ok) {
+          const newItem: Checklist = await response.json();
+          setChecklistItems((prevItems) => [...prevItems, newItem]);
+          setNewChecklistItem('');
+        } else {
+          console.error('Failed to add checklist item');
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleEdit = (id: number, task: string, description: string) => {
@@ -66,7 +100,7 @@ const TodoList: React.FC<TodoListProps> = ({
   const handleDelete = (id: number) => {
     onDelete(id);
     setEditingId(null);
-    setShowModal(!showModal);
+    setShowModal(false);
   };
 
   if (todos.length === 0) {
@@ -132,17 +166,28 @@ const TodoList: React.FC<TodoListProps> = ({
               ) : (
                 <>
                   <h2>{selectedTodo.task}</h2>
-                  <p>{selectedTodo.description}</p>
+                  <p>{selectedTodo.description}</p>{' '}
+                  <input
+                    type="text"
+                    placeholder="Add checklist item"
+                    value={newChecklistItem}
+                    onChange={(e) => setNewChecklistItem(e.target.value)}
+                  />
+                  <button onClick={addChecklistItem}>Add Item</button>
                   <div>
-                    {selectedTodo.checklist.map((listItem, index) => (
-                      <div key={index}>
-                        <input
-                          type="checkbox"
-                          checked={listItem.checked}
-                          readOnly
-                        />
-                        <span>{listItem.item}</span>
-                      </div>
+                    {checklistItems.map((listItem) => (
+                      <ChecklistItem
+                        key={listItem.id}
+                        todoId={selectedTodo.id}
+                        item={listItem}
+                        onDelete={() =>
+                          setChecklistItems(
+                            checklistItems.filter(
+                              (item) => item.id !== listItem.id
+                            )
+                          )
+                        }
+                      />
                     ))}
                   </div>
                   <span
