@@ -21,6 +21,7 @@ interface TodoListProps {
   onToggleComplete: (id: number) => void;
   onEdit: (id: number, newTask: string, newDescription: string) => void;
   onDelete: (id: number) => void;
+  onModalClose: () => void;
 }
 
 const TodoList: React.FC<TodoListProps> = ({
@@ -28,6 +29,7 @@ const TodoList: React.FC<TodoListProps> = ({
   onDelete,
   onToggleComplete,
   onEdit,
+  onModalClose,
 }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [newTask, setNewTask] = useState<string>('');
@@ -47,6 +49,7 @@ const TodoList: React.FC<TodoListProps> = ({
     setShowModal(false);
     setSelectedTodo(null);
     setChecklistItems([]);
+    onModalClose();
   };
 
   const addChecklistItem = async () => {
@@ -117,7 +120,15 @@ const TodoList: React.FC<TodoListProps> = ({
             onChange={() => onToggleComplete(todo.id)}
             className={styles.todoCheckbox}
           />
-          <h3 className={styles.todoTask} onClick={() => handleOpenModal(todo)}>
+          <h3
+            data-testid="todo-item"
+            className={styles.todoTask}
+            onClick={() => handleOpenModal(todo)}
+            style={{
+              textDecoration: todo.completed ? 'line-through' : 'none',
+              color: todo.completed ? '#aaa' : 'inherit',
+            }}
+          >
             {todo.task}
           </h3>
         </div>
@@ -209,6 +220,7 @@ const TodoList: React.FC<TodoListProps> = ({
                     ))}
                   </div>
                   <span
+                    data-testid="edit-button"
                     onClick={() =>
                       handleEdit(
                         selectedTodo.id,

@@ -128,6 +128,10 @@ const App: FC = () => {
     }
   };
 
+  const handleModalClose = () => {
+    getTodos();
+  };
+
   return (
     <div className={styles.main}>
       <CreateTask onCreateTask={handleCreateTask} />
@@ -136,6 +140,7 @@ const App: FC = () => {
         onToggleComplete={handleToggleComplete}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onModalClose={handleModalClose}
       />
     </div>
   );

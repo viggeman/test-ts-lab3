@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "task": "Task 1",
+    "description": "Description 1",
+    "completed": false,
+    "checklist": [
+      { "id": 1, "item": "Checklist item 1", "checked": false },
+      { "id": 2, "item": "Checklist item 2", "checked": true }
+    ]
+  },
+  {
+    "id": 2,
+    "task": "Task 2",
+    "description": "Description 2",
+    "completed": true,
+    "checklist": []
+  }
+]

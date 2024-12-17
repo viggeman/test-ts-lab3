@@ -9,6 +9,7 @@ describe('TodoList Component', () => {
         onToggleComplete={() => {}}
         onEdit={() => {}}
         onDelete={() => {}}
+        onModalClose={() => {}}
       />
     );
     cy.contains('No todos yet!').should('be.visible');
@@ -37,6 +38,7 @@ describe('TodoList Component', () => {
         onToggleComplete={() => {}}
         onEdit={() => {}}
         onDelete={() => {}}
+        onModalClose={() => {}}
       />
     );
     cy.contains('Task 1').should('be.visible');
@@ -62,6 +64,7 @@ describe('TodoList Component', () => {
         onToggleComplete={mockOnToggleComplete}
         onEdit={() => {}}
         onDelete={() => {}}
+        onModalClose={() => {}}
       />
     );
 
@@ -86,10 +89,11 @@ describe('TodoList Component', () => {
         onToggleComplete={() => {}}
         onEdit={() => {}}
         onDelete={() => {}}
+        onModalClose={() => {}}
       />
     );
 
-    cy.get('[data-testid="todo-item"]').click();
+    cy.get('h3[data-testid="todo-item"]').click();
     cy.get('[data-testid="todo-modal"]').should('be.visible');
     cy.contains('Task 1').should('be.visible');
     cy.contains('This is a test task').should('be.visible');
@@ -120,10 +124,11 @@ describe('TodoList Component', () => {
         onToggleComplete={() => {}}
         onEdit={mockOnEdit}
         onDelete={() => {}}
+        onModalClose={() => {}}
       />
     );
 
-    cy.get('[data-testid="todo-item"]').click();
+    cy.get('h3[data-testid="todo-item"]').click();
     cy.get('[data-testid="todo-modal"]').should('be.visible');
     cy.get('[data-testid="todo-modal"]').contains('Edit').click();
 
@@ -141,5 +146,36 @@ describe('TodoList Component', () => {
     );
     cy.get('[data-testid="todo-modal"]').should('be.visible');
     cy.contains('Edited task').should('be.visible');
+  });
+
+  it('calls onDelete when the delete button is clicked in the modal', () => {
+    const mockTodos = [
+      {
+        id: 1,
+        task: 'Task 1',
+        description: 'This is a test task',
+        checklist: [],
+        completed: false,
+      },
+    ];
+    const mockOnDelete = cy.spy().as('deleteTask');
+
+    mount(
+      <TodoList
+        todos={mockTodos}
+        onToggleComplete={() => {}}
+        onEdit={() => {}}
+        onDelete={mockOnDelete}
+        onModalClose={() => {}}
+      />
+    );
+
+    cy.get('h3[data-testid="todo-item"]').click();
+    cy.get('[data-testid="todo-modal"]').should('be.visible');
+    cy.get('[data-testid="edit-button"]').click();
+    cy.get('[data-testid="todo-modal"]').contains('Delete').click();
+
+    cy.get('@deleteTask').should('have.been.calledWith', 1);
+    cy.get('[data-testid="todo-modal"]').should('not.exist');
   });
 });
