@@ -32,7 +32,7 @@ const TodoList: React.FC<TodoListProps> = ({
   const [editingId, setEditingId] = useState<number | null>(null);
   const [newTask, setNewTask] = useState<string>('');
   const [newDescription, setNewDescription] = useState<string>('');
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
   const [checklistItems, setChecklistItems] = useState<Checklist[]>([]);
   const [newChecklistItem, setNewChecklistItem] = useState<string>('');
@@ -108,19 +108,18 @@ const TodoList: React.FC<TodoListProps> = ({
   }
 
   return (
-    <div>
+    <div className={styles.todoListContainer}>
       {todos.map((todo) => (
-        <div
-          key={todo.id}
-          data-testid="todo-item"
-          onClick={() => handleOpenModal(todo)}
-        >
+        <div key={todo.id} data-testid="todo-item" className={styles.todoItem}>
           <input
             type="checkbox"
             checked={todo.completed}
             onChange={() => onToggleComplete(todo.id)}
+            className={styles.todoCheckbox}
           />
-          <h3>{todo.task}</h3>
+          <h3 className={styles.todoTask} onClick={() => handleOpenModal(todo)}>
+            {todo.task}
+          </h3>
         </div>
       ))}
       {showModal && selectedTodo && (
@@ -133,7 +132,7 @@ const TodoList: React.FC<TodoListProps> = ({
             >
               &times;
             </span>
-            <div>
+            <div className={styles.modalBody}>
               {editingId === selectedTodo.id ? (
                 <>
                   <div className={styles.editContainer}>
@@ -141,22 +140,33 @@ const TodoList: React.FC<TodoListProps> = ({
                       type="text"
                       value={newTask}
                       onChange={(e) => setNewTask(e.target.value)}
+                      className={styles.editInput}
                     />
                     <textarea
                       value={newDescription || undefined}
                       onChange={(e) => setNewDescription(e.target.value)}
+                      className={styles.editTextarea}
                     />
                     <div className={styles.buttonContainer}>
                       <div>
-                        <button onClick={() => setEditingId(null)}>
+                        <button
+                          onClick={() => setEditingId(null)}
+                          className={styles.cancelButton}
+                        >
                           Cancel
                         </button>
-                        <button onClick={() => handleSave(selectedTodo.id)}>
+                        <button
+                          onClick={() => handleSave(selectedTodo.id)}
+                          className={styles.saveButton}
+                        >
                           Save
                         </button>
                       </div>
                       <div>
-                        <button onClick={() => handleDelete(selectedTodo.id)}>
+                        <button
+                          onClick={() => handleDelete(selectedTodo.id)}
+                          className={styles.deleteButton}
+                        >
                           Delete
                         </button>
                       </div>
@@ -165,16 +175,24 @@ const TodoList: React.FC<TodoListProps> = ({
                 </>
               ) : (
                 <>
-                  <h2>{selectedTodo.task}</h2>
-                  <p>{selectedTodo.description}</p>{' '}
+                  <h2 className={styles.todoTitle}>{selectedTodo.task}</h2>
+                  <p className={styles.todoDescription}>
+                    {selectedTodo.description}
+                  </p>
                   <input
                     type="text"
                     placeholder="Add checklist item"
                     value={newChecklistItem}
                     onChange={(e) => setNewChecklistItem(e.target.value)}
+                    className={styles.addItemInput}
                   />
-                  <button onClick={addChecklistItem}>Add Item</button>
-                  <div>
+                  <button
+                    onClick={addChecklistItem}
+                    className={styles.addItemButton}
+                  >
+                    Add Item
+                  </button>
+                  <div className={styles.checklistContainer}>
                     {checklistItems.map((listItem) => (
                       <ChecklistItem
                         key={listItem.id}
@@ -198,6 +216,7 @@ const TodoList: React.FC<TodoListProps> = ({
                         selectedTodo.description
                       )
                     }
+                    className={styles.editLink}
                   >
                     Edit
                   </span>

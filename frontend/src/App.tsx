@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from 'react';
+import styles from './App.module.css';
 import CreateTask from './components/CreateTask/CreateTask';
 import TodoList from './components/TodoList/TodoList';
 
@@ -128,7 +129,7 @@ const App: FC = () => {
   };
 
   return (
-    <div>
+    <div className={styles.main}>
       <CreateTask onCreateTask={handleCreateTask} />
       <TodoList
         todos={todos}

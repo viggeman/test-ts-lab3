@@ -1,3 +1,39 @@
+.todoListContainer {
+  width: 80%;
+  margin: 2rem auto;
+  padding: 2rem;
+  border: 0.1rem solid #ccc;
+  border-radius: 0.5rem;
+}
+
+.todoItem {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 0.1rem solid #ccc;
+  cursor: pointer;
+}
+
+.todoCheckbox {
+  margin-right: 1rem;
+}
+
+.todoTask {
+  font-weight: bold;
+}
+
+.todoTitle {
+  font-size: 2.4rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.todoDescription {
+  font-size: 1.6rem;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
 .modal {
   display: block;
   position: fixed;
@@ -12,25 +48,22 @@
 
 .modalContent {
   background-color: #fefefe;
-  color: black;
   margin: 15% auto;
-  padding: 1rem;
-  border: 1px solid #888;
+  padding: 2rem;
+  border: 0.1rem solid #888;
   width: 60%;
 }
 
 .closeButton {
   color: #aaa;
-  font-size: 28px;
+  float: right;
+  font-size: 2.8rem;
   font-weight: bold;
-  line-height: 1;
+  cursor: pointer;
 }
 
-.closeButton:hover,
-.closeButton:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
+.modalBody {
+  margin-top: 2rem;
 }
 
 .editContainer {
@@ -38,7 +71,67 @@
   flex-direction: column;
 }
 
+.editInput,
+.editTextarea {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 0.1rem solid #ccc;
+  border-radius: 0.5rem;
+}
+
 .buttonContainer {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.cancelButton,
+.saveButton,
+.deleteButton {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.cancelButton {
+  background-color: #ccc;
+  margin-right: 1rem;
+}
+
+.saveButton {
+  background-color: #4caf50;
+  color: white;
+}
+
+.deleteButton {
+  background-color: #f44336;
+  color: white;
+}
+
+.addItemInput {
+  padding: 1rem;
+  border: 0.1rem solid #ccc;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.addItemButton {
+  background-color: #2196f3;
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.checklistContainer {
+  margin: 1rem 0;
+}
+
+.editLink {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
 }

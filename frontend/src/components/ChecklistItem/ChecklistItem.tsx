@@ -1,4 +1,5 @@
-import { FC, useState } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
+import styles from './ChecklistItem.module.css';
 
 interface Checklist {
   id: number;
@@ -13,9 +14,9 @@ interface ChecklistItemProps {
 }
 
 const ChecklistItem: FC<ChecklistItemProps> = ({ todoId, item, onDelete }) => {
-  const [checklistItem, setChecklistItem] = useState(item);
-  const [editing, setEditing] = useState(false);
-  const [newItem, setNewItem] = useState(item.item);
+  const [checklistItem, setChecklistItem] = useState<Checklist>(item);
+  const [editing, setEditing] = useState<boolean>(false);
+  const [newItem, setNewItem] = useState<string>(item.item);
 
   const handleToggle = async () => {
     try {
@@ -37,7 +38,7 @@ const ChecklistItem: FC<ChecklistItemProps> = ({ todoId, item, onDelete }) => {
     }
   };
 
-  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEditChange = (e: ChangeEvent<HTMLInputElement>) => {
     setNewItem(e.target.value);
   };
 
@@ -87,11 +88,19 @@ const ChecklistItem: FC<ChecklistItemProps> = ({ todoId, item, onDelete }) => {
   };
 
   return (
-    <div key={checklistItem.id}>
+    <div
+      className="checklistItem"
+      key={checklistItem.id}
+      style={{
+        textDecoration: checklistItem.checked ? 'line-through' : 'none',
+        color: checklistItem.checked ? '#aaa' : 'inherit',
+      }}
+    >
       <input
         type="checkbox"
         checked={checklistItem.checked}
         onChange={handleToggle}
+        className={styles.checklistItemCheckbox}
       />
       {editing ? (
         <>
@@ -100,11 +109,22 @@ const ChecklistItem: FC<ChecklistItemProps> = ({ todoId, item, onDelete }) => {
             value={newItem}
             onChange={handleEditChange}
             onBlur={handleEditSave}
+            className={styles.checklistItemInput}
           />
-          <button onClick={handleDelete}>Delete</button>
+          <button
+            onClick={handleDelete}
+            className={styles.checklistItemDeleteButton}
+          >
+            Delete
+          </button>
         </>
       ) : (
-        <span onClick={() => setEditing(true)}>{checklistItem.item}</span>
+        <span
+          onClick={() => setEditing(true)}
+          className={styles.checklistItemText}
+        >
+          {checklistItem.item}
+        </span>
       )}
     </div>
   );

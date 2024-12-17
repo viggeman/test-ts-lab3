@@ -1,0 +1,30 @@
+.checklistItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.checklistItemCheckbox {
+  margin-right: 0.5rem;
+}
+
+.checklistItemText {
+  cursor: pointer;
+  font-size: 1.6rem;
+}
+
+.checklistItemInput {
+  padding: 0.5rem;
+  border: 0.1rem solid #ccc;
+  border-radius: 0.5rem;
+  margin-right: 1rem;
+}
+
+.checklistItemDeleteButton {
+  background-color: #f44336;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
