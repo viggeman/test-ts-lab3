@@ -39,7 +39,6 @@ app.get('/api/todos', async (_request: Request, response: Response) => {
 
 app.post('/api/todos', async (request: Request, response: Response) => {
   const { task, completed } = request.body;
-  console.log('post', task, completed);
   try {
     const { rows } = await client.query(
       'INSERT INTO todos (task, completed) VALUES ($1, $2) RETURNING *;',
@@ -55,7 +54,7 @@ app.post('/api/todos', async (request: Request, response: Response) => {
 app.put('/api/todos/:id', async (request: Request, response: Response) => {
   const { id } = request.params;
   const { task, completed, description } = request.body;
-  console.log(request.params);
+
   try {
     const { rows } = await client.query(
       'UPDATE todos SET task = $1, completed = $2, description = $3 WHERE id = $4 RETURNING *;',

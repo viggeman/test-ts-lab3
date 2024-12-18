@@ -24,7 +24,6 @@ const App: FC = () => {
     try {
       const response = await fetch('/api/todos');
       const data = await response.json();
-      console.log(data);
       setTodos(data);
     } catch (error) {
       console.error(error);
@@ -66,7 +65,6 @@ const App: FC = () => {
     newTask: string,
     newDescription: string
   ) => {
-    console.log('newdesc', newDescription);
     try {
       const todo = todos.find((todo) => todo.id === id);
       if (!todo) {
@@ -83,7 +81,6 @@ const App: FC = () => {
           description: newDescription,
         }),
       });
-      console.log('response', response);
       if (response.ok) {
         getTodos();
       } else {

@@ -1,7 +1,6 @@
-// cypress/component/ChecklistItem.cy.tsx
 import { mount } from '@cypress/react';
 import React from 'react';
-import ChecklistItem from '../../src/components/ChecklistItem/ChecklistItem'; // Adjust the path if needed
+import ChecklistItem from '../../src/components/ChecklistItem/ChecklistItem';
 
 describe('ChecklistItem Component', () => {
   const mockTodoId = 1;
